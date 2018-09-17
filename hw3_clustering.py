@@ -128,3 +128,27 @@ pis = [float(len(new_data[k]))/len(X) for k in range(5)]
 means = np.array([mean[k]/len(new_data[k]) for k in range(5)])
 sigmas = np.array([[[0.0]*8]*8]*5)
 
+for k in range(5):
+    
+    for x in new_data[k]:
+        var = x - means[k]
+        var_t = var.reshape((-1,1))
+        var = var.reshape((1, 8))
+        sigmas[k] += np.dot(var_t,var)
+    sigmas[k] /= len(new_data[k])
+    
+for i in range(10):
+    #print ('mues: ', means)
+    #print ('pis: ', pis)
+    #print ('sigmas: ', sigmas.shape, sigmas)
+    for k in range(2):
+        print (i)
+    filename = "pi-" + str(i+1) + ".csv" 
+    np.savetxt(filename, pis, delimiter=",") 
+    filename = "mu-" + str(i+1) + ".csv"
+    np.savetxt(filename, means, delimiter=",") 
+    for j in range(5):  
+        filename = "Sigma-" + str(j+1) + "-" + str(i+1) + ".csv" 
+        np.savetxt(filename, sigmas[j], delimiter=",")
+           
+    pis, means, sigmas = EMGMM(X, pis, means, sigmas)
