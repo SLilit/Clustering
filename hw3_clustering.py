@@ -105,3 +105,26 @@ def EMGMM(data, pi, mu, sigma):
     return pis, means, sigmas    
     
     
+clusters = [randint(0,2834) for i in range(5)]
+clusterslist = np.array([X[i] for i in clusters])
+                           
+
+mean = np.zeros(shape = (5,8))
+new_data = {0: [], 1: [], 2: [], 3: [], 4: []}
+                           
+for i in range(len(X)):
+    min_c = float('inf')
+                           
+    for k in range(5):
+        norm = np.linalg.norm(X[i] - clusterslist[k])
+        if norm < min_c:
+            cluster = k
+            min_c = norm
+    
+    mean[cluster] += X[i]
+    new_data[cluster].append(X[i])
+
+pis = [float(len(new_data[k]))/len(X) for k in range(5)]    
+means = np.array([mean[k]/len(new_data[k]) for k in range(5)])
+sigmas = np.array([[[0.0]*8]*8]*5)
+
